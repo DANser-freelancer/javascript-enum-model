@@ -1,0 +1,16 @@
+{
+  "name": "javascript-enum-model",
+  "type": "module",
+  "version": "1.0.0",
+  "description": "A model or 'feature prototype' for vanilla javascript enums alive at runtime",
+  "main": "enum.js",
+  "scripts": {
+    "dev": "node examples.js"
+  },
+  "keywords": [
+    "enum",
+    "javascript"
+  ],
+  "author": "[Dan](https://github.com/DANser-freelancer) dans.channels.contact@gmail.com",
+  "license": "BSD-3-Clause"
+}
