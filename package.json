@@ -1,7 +1,7 @@
 {
   "name": "@danscode/enum",
   "type": "module",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "A model or 'feature prototype' for vanilla javascript enums alive at runtime",
   "main": "enum.js",
   "scripts": {
