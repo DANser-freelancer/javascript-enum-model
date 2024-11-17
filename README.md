@@ -29,4 +29,4 @@ Also all `Enum` and `EnumVariant` instances _should_ be immutable
 
 - [Typescript implementation]()
 - [JS runtime implementation]()
-- [Use in raw form]("./raw.md")
+- [Use in raw form](https://github.com/DANser-freelancer/javascript-enum-model/blob/main/raw.md)
