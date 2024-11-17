@@ -1,7 +1,7 @@
 {
-  "name": "javascript-enum-model",
+  "name": "@danscode/enum",
   "type": "module",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "description": "A model or 'feature prototype' for vanilla javascript enums alive at runtime",
   "main": "enum.js",
   "scripts": {
@@ -9,8 +9,14 @@
   },
   "keywords": [
     "enum",
-    "javascript"
+    "javascript",
+    "ES2022"
   ],
   "author": "[Dan](https://github.com/DANser-freelancer) dans.channels.contact@gmail.com",
-  "license": "BSD-3-Clause"
+  "license": "BSD-3-Clause",
+  "files": [
+    "enum.js",
+    "LICENSE",
+    "README.md"
+  ]
 }
