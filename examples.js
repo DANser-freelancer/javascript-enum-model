@@ -44,15 +44,15 @@ const daysOfBits = new Enum(
   Enum.flags
 );
 
-log(daysOfBits.Monday);
-log(daysOfBits.Monday.int);
-log(daysOfBits[8]);
-log(daysOfBits.b(18 & 7));
+log(daysOfBits.Monday); // 1
+log(daysOfBits[8]); // Thursday
+log(daysOfBits.entries(18 & 7)); // ['Tuesday']
 for (const day in daysOfBits) {
-  log(day);
-  log(daysOfBits[day]);
+  log(day); // 1,2,4,8,16,32,64
+  log(daysOfBits[day]); // Monday ... Sunday
 }
-log(daysOfBits.b(1 << 26));
+log(daysOfBits.values(1 << 26)); // oops, empty for bitmask 67108864
+
 clear();
 const WebEvent = new Enum(
   'WebEvent',
@@ -139,9 +139,10 @@ log(
   permissionsBits[1 + (permissionsBits.Read | permissionsBits.Write | permissionsBits.Delete)] // Mod
 );
 const mod = permissionsBits.Read | permissionsBits.Write; // 5
-log(permissions.b(7)); // 'Read, Delete, Write'
-log(permissionsBits.b(mod)); // 'Read, Write'
-log(permissionsBits.b(1 << 15)); // undefined
+log(permissions.values(7)); // ['Read, Delete, Write']
+log(permissions.entries(7).print); // 'Read, Delete, Write'
+log(permissionsBits.keys(mod)); // [1, 4]
+log(permissionsBits.values(1 << 15)); // undefined
 
 // Admin is it's own bit, Admin-1 is a superset of preceding bits
 const admin =
@@ -151,7 +152,7 @@ const adminBit = (permissionsBits.size - 1) ** 2 - 1; // 15
 log(adminBit === permissionsBits.Admin - 1); // true
 
 if ((adminBit | permissionsBits.Delete) === permissionsBits.Admin - 1) {
-  // Admin-1 has Delete bit so adding it should change nothing
+  // Admin-1 contains Delete bit so adding it should change nothing
   log('is Admin');
   if ((admin & allFlags) === allFlags) {
     // Admin or Admin-1 does not stand above Admin

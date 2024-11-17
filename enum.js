@@ -382,11 +382,11 @@ export default class Enum {
   }
 
   /**
-   * returns a string of enum fields that are members of the bitmask
+   * looks for enum fields that are members of the bitmask
    * @param {number} mask - integer between 1 and -2147483648
-   * @returns {string|undefined}
+   * @returns {string[]|undefined}
    */
-  b(mask) {
+  values(mask) {
     if (this['[[metadata]]'].type === Enum.symbolic) {
       throw new TypeError(`Cannot use bitmasking method .b() on symbolic enum`);
     }
@@ -397,11 +397,77 @@ export default class Enum {
         flags.push(this[key]);
       }
     }
+    Object.defineProperty(flags, 'print', {
+      get: function () {
+        return this.join(', ');
+      }.bind(flags)
+    });
 
     if (flags.length < 1) {
       return this[0](mask);
     }
-    return flags.join(', ');
+    return flags;
+  }
+
+  /**
+   * looks for enum fields that are members of the bitmask and gets their integers
+   * @param {number} mask - integer between 1 and -2147483648
+   * @returns {number[]|undefined}
+   */
+  keys(mask) {
+    if (this['[[metadata]]'].type === Enum.symbolic) {
+      throw new TypeError(`Cannot use bitmasking method .b() on symbolic enum`);
+    }
+
+    const flags = [];
+    for (let i = 0, key = 1; i < 32; i++, key = 1 << i) {
+      if ((mask | key) === mask && key in this) {
+        flags.push(key);
+      }
+    }
+    Object.defineProperty(flags, 'print', {
+      get: function () {
+        return this.join(', ');
+      }.bind(flags)
+    });
+
+    if (flags.length < 1) {
+      return this[0](mask);
+    }
+    return flags;
+  }
+
+  /**
+   * looks for enum fields that are members of the bitmask and makes value:key pairs
+   * @param {number} mask - integer between 1 and -2147483648
+   * @returns {[string, number][]|undefined}
+   */
+  entries(mask) {
+    if (this['[[metadata]]'].type === Enum.symbolic) {
+      throw new TypeError(`Cannot use bitmasking method .b() on symbolic enum`);
+    }
+
+    const flags = [];
+    for (let i = 0, key = 1; i < 32; i++, key = 1 << i) {
+      if ((mask | key) === mask && key in this) {
+        flags.push([this[key], key]);
+      }
+    }
+    Object.defineProperty(flags, 'print', {
+      get: function () {
+        const string = Array.from(this);
+        for (let i = 0; i < string.length; i++) {
+          const [val, key] = string[i];
+          string[i] = `${val}(${key})`;
+        }
+        return string.join(', ');
+      }.bind(flags)
+    });
+
+    if (flags.length < 1) {
+      return this[0](mask);
+    }
+    return flags;
   }
 
   #form = {};
@@ -421,7 +487,7 @@ export default class Enum {
         continue;
       }
       if (typeof form[key] != `function`) {
-        throw new TypeError(`Expected form field "${key}" to be a funcion`);
+        throw new TypeError(`Expected matching expression for "${key}" to be a function`);
       }
     }
 

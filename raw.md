@@ -1,6 +1,7 @@
-# About
+# Overvview
 
-This is a file that describes the use of enum.mjs in it's current raw form, as if you simpy inserted it into your codebase. To avoid repeating myself, this will be a verbose recap of **what** my code does, while my codebase combined with jsdoc will tell you **how**.
+This is a file that describes the use of enum.mjs in it's current raw form, as if you simpy inserted it into your codebase.  
+To avoid repeating myself, this will be a verbose recap of **what** my code does, while my codebase combined with jsdoc will tell you **how**.
 
 # Enum
 
@@ -14,8 +15,10 @@ If you are questioning my design decisions, here are my sources:
 - [my brain](https://www.youtube.com/watch?v=CWExUQcTxB8)
 
 > [!NOTE]  
-> When I say _"like in x language"_, I mean I borrowed some ideas from the language, and made it fit into javascript. I have been writing vanilla javascript for a long time now.  
-> I don't posess the same level of expertise to implement an exact copy of the Enum from another language. And either way - I don't have to do that.
+> When I say _"like in x language"_, I mean I borrowed some ideas from the language, and made it fit into javascript.  
+> I have been writing vanilla javascript for a long time now.  
+> I don't posess the same level of expertise to implement an exact copy of the Enum from another language.  
+> And either way - I don't have to do that.
 
 #### Prototype <!-- #prototype -->
 
@@ -37,10 +40,21 @@ If you are questioning my design decisions, here are my sources:
   7. `.checkType()` - checks if a string represents one of the types[^type_annotations] used in a schema[^schema]
 
 - Instance:
-  1. `.b(<int>)` - bitmasking[^bitmasking] function, returns a CCS _(comma separated string)_ of all the enum flags that are members of the mask
-  2. `<enum>.match =` - non-enumerable, sets a default object of callbacks for pattertn matching[^pattern_matching] on this [Enum](#enum) instance
-  3. `<enum>.match()` - shortcut to `Enum.match()`, that uses default callbacks
-  4. `<enum>.size` - occurs in `Enum.simple` and `Enum.flags`, may be useful for bitmasking[^bitmasking]
+  1. `.values(<int>)` - returns an array of names matching the bitmask[^bitmasking]
+     - `<arr>.print` returns a CCS _(comma separated string)_ of all values
+     - `Enum.simple` and `Enum.flags` only
+  2. `.keys(<int>)` - returns an array of integers matching the bitmask[^bitmasking]
+     - `<arr>.print` returns a CCS of all keys
+     - `Enum.simple` and `Enum.flags` only
+  3. `.entries(<int>)` - returns an array of `[value:key]` pairs matching the bitmask[^bitmasking]
+     - `<arr>.print` returns a CCS of all entries, formatted as `<value>(<key>), `
+     - `Enum.simple` and `Enum.flags` only
+  4. `<enum>.match =` - non-enumerable, sets a default object of callbacks for pattertn matching[^pattern_matching] on this [Enum](#enum) instance
+     - `Enum.symbolic` only
+  5. `<enum>.match()` - shortcut to `Enum.match()`, that uses default callbacks
+     - `Enum.symbolic` only
+  6. `<enum>.size` - same as `Object.keys(<enum>).length`, may be useful for bitmasking[^bitmasking]
+     - `Enum.simple` and `Enum.flags` only
 
 **Private properties:**
 
@@ -119,12 +133,12 @@ The structure of the [EnumVariant](#enumvariant) is decided at the time of [Enum
   - `.value` will **not** be added by default
 - [EnumVariant](#enumvariant) can handle both `{}` and `[]` objects
 
-#### boud builder()
+#### bound builder()
 
 If an [Enum](#enum) field contained a valid type[^type_annotations] or a complex value[^complex_value] a bound constructor function `builder()` is placed there, otherwise an [EnumVariant](#enumvariant) containing a `Symbol` is placed.
 
 - `<builder>.schema` - a copy of the schema[^schema] used by the builder
-- `<builder>.match =` - sets new matching function for the relevant [EnumVariant](#enumvariant)
+- `<builder>.match =` - updates the default matching callback for the relevant [EnumVariant](#enumvariant)
 
 ## [[metadata]]
 
@@ -255,7 +269,7 @@ The structure object[^structure_object] is only accepted with fields that pass t
 Each field's integer is assigned automatically, based on the order of insertion.  
 Consider example similar to the previous object:
 
-[^field0]: field `0` is reserved for a default action from `.b()` if it fails to find a match
+[^field0]: field `0` is reserved for a default action from bitmasking[^bitmasking] methods (i.e. `<enum>.values()`) if they fail to find a match
 
 ```javascript
 const daysOfBits = new Enum(
@@ -300,15 +314,14 @@ For each field, 2 properties are defined on the resulting enum:
 ### Behavior
 
 ```javascript
-log(daysOfBits.Monday); // String('Monday')
-log(daysOfBits.Monday.int); // 1
+log(daysOfBits.Monday); // 1
 log(daysOfBits[8]); // Thursday
-log(daysOfBits.b(18 & 7)); // Enum{2: 'Tuesday', Tuesday: String}
+log(daysOfBits.entries(18 & 7)); // ['Tuesday']
 for (const day in daysOfBits) {
   log(day); // 1,2,4,8,16,32,64
   log(daysOfBits[day]); // Monday ... Sunday
 }
-log(daysOfBits.b(1 << 26)); // oops, empty for bitmask 67108864
+log(daysOfBits.values(1 << 26)); // oops, empty for bitmask 67108864
 ```
 
 ## Enum.symbolic
@@ -386,7 +399,7 @@ Let's break down the different kinds of fields you can have:
   1. `WebEvent.KeyPress` was declared with `'char'`, which is one of the available types[^type_annotations]
   2. schema[^schema] is built for the singular type annotation
      - it looks like this `{ value: 'char' }`
-  3. `WebEvent.KeyPress` is now a [bound builder()](#boud-builder)
+  3. `WebEvent.KeyPress` is now a [bound builder()](#bound-builder)
      - it will accept a value and, in standard javascript fashion, try to convert it
      - this will create an instance of [EnumVariant](#enumvariant)
      - you can keep creating more `WebEvent.KeyPress` instances
@@ -398,7 +411,7 @@ Let's break down the different kinds of fields you can have:
   1. `WebEvent.Click` is declared with an object
   2. the object is recursively processed and a schema[^schema] is built
      - it loks like this `{ x: 'int', y: 'int', z: ['str', 'bool', 'str'] }`
-  3. `WebEvent.Click` is now a [bound builder()](#boud-builder)
+  3. `WebEvent.Click` is now a [bound builder()](#bound-builder)
      - it will accept an object of values and, in standard javascript fashion, try to convert them
      - this will create an instance of [EnumVariant](#enumvariant)
      - you can keep creating more `WebEvent.Click` instances
@@ -464,9 +477,10 @@ log(
   permissionsBits[1 + (permissionsBits.Read | permissionsBits.Write | permissionsBits.Delete)] // Mod
 );
 const mod = permissionsBits.Read | permissionsBits.Write; // 5
-log(permissions.b(7)); // 'Read, Delete, Write'
-log(permissionsBits.b(mod)); // 'Read, Write'
-log(permissionsBits.b(1 << 15)); // undefined
+log(permissions.values(7)); // ['Read, Delete, Write']
+log(permissions.entries(7).print); // 'Read, Delete, Write'
+log(permissionsBits.keys(mod)); // [1, 4]
+log(permissionsBits.values(1 << 15)); // undefined
 
 // Admin is it's own bit, Admin-1 is a superset of preceding bits
 const admin =
@@ -476,7 +490,7 @@ const adminBit = (permissionsBits.size - 1) ** 2 - 1; // 15
 log(adminBit === permissionsBits.Admin - 1); // true
 
 if ((adminBit | permissionsBits.Delete) === permissionsBits.Admin - 1) {
-  // Admin-1 has Delete bit so adding it should change nothing
+  // Admin-1 contains Delete bit so adding it should change nothing
   log('is Admin');
   if ((admin & allFlags) === allFlags) {
     // Admin or Admin-1 does not stand above Admin
@@ -533,17 +547,17 @@ for (const val of click) {
 The details of methods and structures here described are pretty self explanatory.  
 Once you look at the code, and run examples.js a couple of times with debugger, you'll get it.  
 Feedback on the syntax, memory efficiency, bugs is welcome in the issues section.  
-I will not deploy it as a package, because I've had to take some roundabouts
+I will deploy it as a package, but consider this an experiment, because I've had to take some roundabouts:
 
 - for convenience's sake I decided to implement it using latest features like private and static class fields from **ES 2022**
 - I had to "manifest" certain data that should ideally be dealt with by the ts compiler or by the runtime
   - I tried mimicking your average enum syntax best I could, but it's not completely convenient
   - `[[metadata]].name` exists simply for debugging purposes as the code can't read itself and know how you named the newly created [Enum](#enum)
   - [metadata](#[[metadata]]) object in general is a form of introspection, necessary for a functional "feature prototype"
-  - one or more loops are often used to parse the Enum structure declaration and then to parse source objects[^source_object]
+  - one or more loops are often used to parse the Enum structure object[^structure_object] and then to parse source objects[^source_object]
 
 However I encourage people to try out this [Enum](#enum) implementation.  
 I believe this code can be rewritten to fit old enough versions of ECMAScript standard.  
-And anybody can release a package making use of this repo to `npm`, I only ask that they respect the permissive free [license]("./LICENSE").
+This project is under the permissive free [license]("./LICENSE").
 
 [^source_object]: **Source object** is similar to the structure object[^structure_object] but it's values are transformed according to the schema[^schema] and a new [EnumVariant](#enumvariant) instance is built
