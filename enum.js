@@ -1,12 +1,10 @@
 /**
  * `[[metadata]]` object will be present in all instances of `Enum` and `EnumVariant`
  * - `metadata.title` and `metadata.type` occur in all types of `Enum`
- * - `metadata.size` occurs in `Enum.simple` and `Enum.flags`
  * - `metadata.parent` occurs in all instances of `EnumVariant`
  * @typedef {Object} metadata
  * @prop {string} metadata.title
  * @prop {symbol} metadata.type
- * @prop {number} [metadata.size]
  * @prop {Enum} [metadata.parent]
  */
 
@@ -29,9 +27,6 @@ export default class Enum {
         });
       } else if (typeof obj?.value == `symbol`) {
         Object.defineProperty(this, 'match', {
-          // get: () => {
-          //   return this['[[metadata]]'].parent.match.call(this, this);
-          // },
           set: (callback) => {
             const name = this['[[metadata]]'].title;
             if (typeof callback != `function`) {
@@ -162,7 +157,6 @@ export default class Enum {
    */
   static #flags(title, obj, subject) {
     // bit keyed enum
-    // !FIXME use for in instead of .keys
     const keys = Object.keys(obj);
     const index = keys.indexOf('0');
     const shouldError = index > -1 ? keys.length > 33 : keys.length > 32;
@@ -508,13 +502,11 @@ export default class Enum {
   }
 
   *[Symbol.iterator]() {
-    const vals = Object.values(this);
-    for (let i = 0; i < vals.length; i++) {
-      yield vals[i];
+    for (const key in this) {
+      yield this[key];
     }
   }
 }
-// Object.freeze(Enum);
 
 export class EnumVariant extends Enum {
   /**
@@ -615,7 +607,6 @@ export class EnumVariant extends Enum {
     return applySchema(obj, schema);
   }
 }
-// Object.freeze(EnumVariant);
 
 function functionalClone(obj) {
   const res = {};
