@@ -1,7 +1,26 @@
-# Overvview
+# Overview
 
 This is a file that describes the use of enum.mjs in it's current raw form, as if you simpy inserted it into your codebase.  
 To avoid repeating myself, this will be a verbose recap of **what** my code does, while my codebase combined with jsdoc will tell you **how**.
+
+#### Contents:
+
+- [Enum](#enum)
+  - [Simple](#enumsimple)
+    - [syntax](#syntax)
+    - [structure](#structure-1)
+    - [behavior](#behavior)
+  - [Flags](#enumflags)
+    - [syntax](#syntax-1)
+    - [structure](#structure-2)
+    - [behavior](#behavior-1)
+  - [Symbolic](#enumsymbolic)
+    - [syntax](#syntax-2)
+    - [structure](#structure-3)
+    - [behavior](#behavior-2)
+  - [Metadata](#metadata)
+- [EnumVariant](#enumvariant)
+- [Advanced Examples](#advanced)
 
 # Enum
 

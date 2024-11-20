@@ -1,5 +1,5 @@
 import Enum from './enum.js';
-const { log, table, clear } = console;
+const { log, clear } = console;
 
 const daysOfWeek = new Enum('daysOfWeek', {
   Monday: '',
@@ -24,6 +24,7 @@ for (const val of daysOfWeek) {
   log(daysOfWeek[val]);
   log(daysOfWeek[val].int);
 }
+debugger;
 clear();
 const daysOfBits = new Enum(
   'daysOfBits',
@@ -53,6 +54,7 @@ for (const day in daysOfBits) {
 }
 log(daysOfBits.values(1 << 26)); // oops, empty for bitmask 67108864
 
+debugger;
 clear();
 const WebEvent = new Enum(
   'WebEvent',
@@ -112,6 +114,7 @@ for (const val of click) {
   log(val);
 }
 
+debugger;
 clear();
 const permissions = new Enum('permissions', {
   Read: 1,
@@ -162,3 +165,5 @@ if ((adminBit | permissionsBits.Delete) === permissionsBits.Admin - 1) {
 } else {
   log('is Mod');
 }
+
+debugger;

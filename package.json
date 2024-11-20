@@ -10,6 +10,8 @@
   "keywords": [
     "enum",
     "javascript",
+    "Rust",
+    "C#",
     "ES2022"
   ],
   "author": "[Dan](https://github.com/DANser-freelancer) dans.channels.contact@gmail.com",
@@ -18,5 +20,13 @@
     "enum.js",
     "LICENSE",
     "README.md"
-  ]
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/DANser-freelancer/javascript-enum-model.git"
+  },
+  "homepage": "https://github.com/DANser-freelancer/javascript-enum-model/blob/main/raw.md#overview",
+  "bugs": {
+    "url": "https://github.com/DANser-freelancer/javascript-enum-model/issues"
+  }
 }
